@@ -1,4 +1,4 @@
-# AI turn-based battle
+<!-- # AI turn-based battle
 Jogo criado para a disciplina de Inteligência Artificial do Instituto de Computação da UFMT. O propósito é que os alunos criem os scripts que decidirão quais ações os personagens devem fazer para alcançar a vitória.
 
 <div align="center">
@@ -61,4 +61,4 @@ pip3 install pygame
 Depois rode o programa `board`
 ```console
 python board.py
-```
+``` -->
