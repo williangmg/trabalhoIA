@@ -8,8 +8,10 @@ import subprocess
 pygame.init()
 
 # Configuration
-PROGRAM_1 = ['python', 'ia-dummy.py'] 
-PROGRAM_2 = ['python', 'ia-dummy.py']
+PROGRAM_1 = ['python', 'ia-dummy.py'] # AZUL
+PROGRAM_2 = ['python', 'ia-heuristic.py'] # AMARELO
+# PROGRAM_1 = ['python', 'ia-heuristic.py'] 
+# PROGRAM_2 = ['python', 'ia-dummy.py']  # ou outra IA, se quiser jogar contra outra
 WIDTH, HEIGHT = 500, 500
 GRID_SIZE = 5
 ARR = []
