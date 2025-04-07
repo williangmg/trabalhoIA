@@ -4,13 +4,13 @@ import sys
 def posicao_para_xy(pos):
     return pos % 5, pos // 5
 
-# Distância de Manhattan
+# Calcula distância de Manhattan
 def distancia(p1, p2):
     x1, y1 = posicao_para_xy(p1)
     x2, y2 = posicao_para_xy(p2)
     return abs(x1 - x2) + abs(y1 - y2)
 
-# Retorna direção evitando colisão direta com inimigo
+# Calcula direção de movimento evitando colisão direta com o inimigo
 def direcao_para(pos_inicial, pos_destino, pos_inimigo):
     x1, y1 = posicao_para_xy(pos_inicial)
     x2, y2 = posicao_para_xy(pos_destino)
@@ -26,7 +26,7 @@ def direcao_para(pos_inicial, pos_destino, pos_inimigo):
         return "up"
     return None
 
-# Verifica se posições estão adjacentes
+# Verifica se duas posições estão adjacentes
 def perto(pos1, pos2):
     x1, y1 = posicao_para_xy(pos1)
     x2, y2 = posicao_para_xy(pos2)
@@ -53,45 +53,65 @@ def main():
     inimigo_armado = balas_inimigo > 0
     estou_perto = perto(pos_jogador, pos_inimigo)
 
-    # ⚔️ Perto do inimigo
+    # ⚔️ Se estou perto do inimigo
     if estou_perto:
+        # Se posso matar o inimigo com 1 ataque, ataco!
         if vida_inimigo <= 1:
             print("attack")
             return
+        # Se tenho mais vida, vale trocar
         if minha_vida > vida_inimigo:
             print("attack")
             return
+        # Se tenho mesma vida E posso atacar primeiro, ataco
         if minha_vida == vida_inimigo and estou_armado:
             print("attack")
             return
-        # Se estou em desvantagem de vida, avalio fugir
-        if vida_inimigo > minha_vida:
-            if not estou_armado and inimigo_armado:
-                if pos_vida != -1 and minha_vida < 9:
-                    direcao = direcao_para(pos_jogador, pos_vida, pos_inimigo)
-                    if direcao:
-                        print(direcao)
-                        return
-                print("attack")
-                return
-            elif pos_vida != -1 and minha_vida < 9:
+        # Se estou em desvantagem de vida, evito confronto mesmo atacando primeiro
+        if minha_vida < vida_inimigo:
+            # Se tem vida no mapa e estou ferido, busco
+            if pos_vida != -1 and minha_vida < 9:
                 direcao = direcao_para(pos_jogador, pos_vida, pos_inimigo)
                 if direcao:
                     print(direcao)
                     return
-        print("attack")
-        return
+            # Se estou desarmado e inimigo armado, tento fugir
+            if not estou_armado and inimigo_armado:
+                if pos_vida != -1:
+                    direcao = direcao_para(pos_jogador, pos_vida, pos_inimigo)
+                    if direcao:
+                        print(direcao)
+                        return
+            # Último recurso: atacar
+            print("attack")
+            return
 
-    # 🛡️ Defesa apenas se estiver MUITO em desvantagem (vida muito baixa + sem arma)
-    if not estou_armado and (minha_vida < vida_inimigo / 2 or minha_vida == 1):
+    # 🛑 Se inimigo está armado e estou desarmado, fugir
+    if inimigo_armado and not estou_armado:
+        if pos_vida != -1 and minha_vida < 9:
+            direcao = direcao_para(pos_jogador, pos_vida, pos_inimigo)
+            if direcao:
+                print(direcao)
+                return
+        if pos_vida != -1:
+            direcao = direcao_para(pos_jogador, pos_vida, pos_inimigo)
+            if direcao:
+                print(direcao)
+                return
         print("block")
         return
 
-    # 🔫 Buscar arma se não tenho
+    # 🔫 Se estou desarmado e posso pegar a arma
     if not estou_armado and pos_arma != -1:
-        direcao = direcao_para(pos_jogador, pos_arma, pos_inimigo)
-        if direcao:
-            print(direcao)
+        # Se estou em desvantagem ou empate e NÃO posso atacar primeiro, pego a arma
+        if minha_vida <= vida_inimigo:
+            direcao = direcao_para(pos_jogador, pos_arma, pos_inimigo)
+            if direcao:
+                print(direcao)
+                return
+        # Se tenho mais vida E posso atacar primeiro, prefiro atacar
+        if minha_vida > vida_inimigo and estou_perto:
+            print("attack")
             return
 
     # 💊 Buscar vida se estiver ferido
@@ -101,13 +121,13 @@ def main():
             print(direcao)
             return
 
-    # 👣 Aproximar-se do inimigo
+    # 👣 Aproxima-se do inimigo se nada mais a fazer
     direcao = direcao_para(pos_jogador, pos_inimigo, pos_inimigo)
     if direcao:
         print(direcao)
         return
 
-    # 🧱 Último recurso: defender
+    # 🧱 Último recurso: defende
     print("block")
 
 main()
