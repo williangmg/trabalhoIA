@@ -74,6 +74,14 @@ def main():
                 print("attack")
                 return
 
+    # Nova Regra: Se estou ao lado da arma e posso pegar com segurança, priorizar pegar
+    if not estou_armado and pos_arma != -1 and distancia(pos_jogador, pos_arma) == 1:
+        if minha_vida >= vida_inimigo and minha_vida > 2:
+            direcao = direcao_para(pos_jogador, pos_arma, pos_inimigo)
+            if direcao:
+                print(direcao)
+                return
+
     # Regra 2
     if not estou_armado and pos_arma != -1:
         direcao = direcao_para(pos_jogador, pos_arma, pos_inimigo)
